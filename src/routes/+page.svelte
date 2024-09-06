@@ -19,17 +19,17 @@
 							toCall: 2,
 							SB: 1,
 							BB: 2,
-							action: 'Fold',
-							result: 'Lost Flop',
+							action: '',
+							result: '',
 							raiseAmount: 6 };
 		const positionList = ['BB', 'SB', 'B', 'CO', 'HJ', 'LJ', 'UTG', 'UTG1', 'UTG2'];
-		let cp = 2;
-		let positions = ['BB', 'SB', 'B', 'CO', 'HJ', 'LJ', 'UTG', 'UTG1'];
-		let actions = ['Fold', 'Call', 'Raise'];
+		const actions = ['Fold', 'Call', 'Raise'];
 		const cards = ['A', 'K', 'Q', 'J', 'T', '9', '8', '7', '6', '5', '4', '3', '2'];
 		const suited = ['Suited', 'Offsuit'];
 		const players = [2, 3, 4, 5, 6, 7, 8, 9];
 		const results = ['Lost Flop', 'Won Flop', 'Lost Turn', 'Won Turn', 'Lost River', 'Won River', 'Lost Showdown', 'Won Showdown']
+		let currentPosition = -1;
+		let positions = ['BB', 'SB', 'B', 'CO', 'HJ', 'LJ', 'UTG', 'UTG1'];
 		let notes = '';
 		let handHistory = [];
 		let gameHistory = [];
@@ -95,6 +95,7 @@
 		}
 	
 		function handleResult(result) {
+			console.log(result);
 			currentHand.result = result;
 			step = 6;
 		}
@@ -147,12 +148,15 @@
 	
 		function addHand(notes) {
 			currentHand.notes = notes;
-			cp = positions.indexOf(currentHand.position);
-			if (cp > positions.length) 
-			{cp = 1;} 
-			else {cp=cp+1;}
+			currentPosition = positions.indexOf(currentHand.position);
+			if (currentPosition > positions.length) {
+				currentPosition = 1;
+			} 
+			else {
+				currentPosition = currentPosition + 1;
+			}
 			updateLocalStorage()
-			position = positions(i);
+			currentHand.position = currentPosition;
 			step = 3;
 		}
 	
@@ -170,7 +174,7 @@
 			venue = gameDetails.venue;
 			date = gameDetails.date;
 			handHistory = gameDetails.handHistory ?? [];
-			step = 4;
+			step = 7;
 		}
 	
 		function deleteGame(key) {
@@ -183,21 +187,26 @@
 	
 		function updateLocalStorage() {
 			handHistory.push({
-				position: position,
-				playerCount: playerCount,
+				position: currentHand.position,
+				playerCount: currentHand.playerCount,
 				card1: currentHand.card1,
 				card2: currentHand.card2,
 				suited: currentHand.suited,
 				toCall: currentHand.toCall,
 				action: currentHand.action,
 				raiseAmount: currentHand.raiseAmount,
-				results: currentHand.result,
-				notes: currentHand.notes	
+				result: currentHand.result,
+				notes: currentHand.notes,
+				SB: currentHand.SB,
+				BB: currentHand.BB
 			});
 			const key = `${player} - ${venue} - ${date}`;
 			const value = JSON.stringify({ player, venue, date, handHistory });
 			localStorage.setItem(key, value);
-			currentHand = { suited: 'Offsuit', card1: null, card2: null, notes: ''};
+			currentHand.suited = 'Offsuit';
+			currentHand.card1 = null;
+			currentHand.card2 = null;
+			currentHand.notes = '';
 		}
 	
 	// JJJJJJJJ   UU    UU MM      MM PPPPPPP             PPPPPPP      AA      GGGGGG   EEEEEEEE
@@ -371,6 +380,9 @@
 						<button on:click={() => handleToggleSuited(s)}>{s}</button>
 					{/each}
 				</div>
+				<div>
+					<button class="" on:click={() => {step = 7}}>View History</button>
+				</div>
 			</div>
 	
 	<!--    AA       CCCCCCC  TTTTTTTT  IIIIIIII   OOOOOO   NN    NN -->
@@ -462,6 +474,24 @@
 		<div class="confirm">
 			<button class="confirm-button" on:click={addHand(currentHand.notes)}>Add Another Hand</button>
 		</div>
+		<!-- history view -->
+		{:else if step === 7}
+		<div>
+			{#each handHistory as hand}
+				<div class="entry-display">
+					<span>
+						{hand.position} | {hand.playerCount} players | {hand.SB}/{hand.BB} | 
+						{hand.card1} {hand.card2} {hand.suited} | {hand.toCall} to call, {hand.action} 
+						{hand.action === 'Raise' ? hand.raiseAmount : ' '} | {hand.result} | {hand.notes ?? 'N/A'}
+					</span>
+				</div>
+			{/each}
+
+			<div class="confirm">
+				<button class="confirm-button" on:click={goToCardSelection}>Add Another Hand</button>
+			</div>
+		</div>
+
 		{/if}
 	</div>
 	
