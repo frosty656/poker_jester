@@ -589,7 +589,7 @@ onMount(() => {
 		.container {
 /*			height: 600px;
 			width: 450px; */
-			height: 100%;
+			height: 100vh;
 			background: #D9D9D9;
 			border-radius: 8px;
 			box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
