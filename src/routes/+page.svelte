@@ -582,7 +582,7 @@ onMount(() => {
 /*  CCCCCCC   SSSSSSS   SSSSSSS  */
 	
 		.container {
-			height: 100dvh;
+			height: 97dvh;
 			background: #D9D9D9;
 			border-radius: 6px;
 			box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
