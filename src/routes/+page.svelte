@@ -179,13 +179,10 @@ onMount(() => {
 		console.clear()
 		const value = localStorage.getItem(key);
 		const gameDetails = JSON.parse(value);
-		// console.log(value);
-		// console.log(gameDetails);
-
+		handHistory = gameDetails.handHistory ?? [];
 		// session.player = gameDetails.player;
 		// session.venue = gameDetails.venue;
 		// session.date = gameDetails.date;
-		handHistory = gameDetails.handHistory ?? [];
 		// currentHand.position = handHistory['position'];
 		// currentHand.playerCount = handHistory.playerCount;
 		// currentHand.card1 = handHistory.card1;
@@ -286,7 +283,7 @@ onMount(() => {
 			step = 3;	
 		}
 		else {
-		step = 2;}
+		step = 4;}
 	}
 
 	function goToResult() {
@@ -294,8 +291,7 @@ onMount(() => {
 	}
 
 	function goToNotes(h) {
-		console.log(h.position)
-		// currentHand = hand;
+		console.log(h.position);
 		currentHand.position = h.position;
 		currentHand.playerCount = h.playerCount;
 		currentHand.card1 = h.card1;
@@ -317,17 +313,17 @@ onMount(() => {
 	}
 </script>
 	
-	<!-- HH    HH   TTTTTTTT MM      MM LL       -->
-	<!-- HH    HH      TT    MMM    MMM LL       -->
-	<!-- HHHHHHHH      TT    MM MMMM MM LL       -->
-	<!-- HH    HH      TT    MM  MM  MM LL       -->
-	<!-- HH    HH      TT    MM  MM  MM LLLLLLLL -->
-	
-	<!--  SSSSSSS   EEEEEEEE   SSSSSSS   SSSSSSS  IIIIIIII   OOOOOO   NN    NN -->						
-	<!-- SS         EE        SS        SS           II     OO    OO  NNN   NN -->						
-	<!--  SSSSSS    EEEEEE     SSSSSS    SSSSSS      II     OO    OO  NN NN NN -->						
-	<!--       SS   EE              SS        SS     II     OO    OO  NN  NNNN -->						
-	<!-- SSSSSSS    EEEEEEEE  SSSSSSS   SSSSSSS   IIIIIIII   OOOOOO   NN    NN -->						
+<!-- HH    HH   TTTTTTTT MM      MM LL       -->
+<!-- HH    HH      TT    MMM    MMM LL       -->
+<!-- HHHHHHHH      TT    MM MMMM MM LL       -->
+<!-- HH    HH      TT    MM  MM  MM LL       -->
+<!-- HH    HH      TT    MM  MM  MM LLLLLLLL -->
+
+<!--  SSSSSSS   EEEEEEEE   SSSSSSS   SSSSSSS  IIIIIIII   OOOOOO   NN    NN -->						
+<!-- SS         EE        SS        SS           II     OO    OO  NNN   NN -->						
+<!--  SSSSSS    EEEEEE     SSSSSS    SSSSSS      II     OO    OO  NN NN NN -->						
+<!--       SS   EE              SS        SS     II     OO    OO  NN  NNNN -->						
+<!-- SSSSSSS    EEEEEEEE  SSSSSSS   SSSSSSS   IIIIIIII   OOOOOO   NN    NN -->						
 	<div class="container">
 		{#if step === 0}
 			{#each gameHistory as game}
@@ -347,11 +343,11 @@ onMount(() => {
 				<button class="confirm-button" on:click={goToNewGame}>Add New Game</button>
 			</div>
 	
-	<!-- PPPPPPP    LL           AA     YY    YY  EEEEEEEE  RRRRRRR  -->
-	<!-- PP    PP   LL         AA  AA    YY  YY   EE        RR    RR -->
-	<!-- PPPPPPPP   LL        AAAAAAAA    YYYY    EEEEEE    RRRRRRR  -->
-	<!-- PP         LL        AA    AA     YY     EE        RR   RR  -->
-	<!-- PP         LLLLLLLL  AA    AA     YY     EEEEEEEE  RR    RR -->
+<!-- PPPPPPP    LL           AA     YY    YY  EEEEEEEE  RRRRRRR  -->
+<!-- PP    PP   LL         AA  AA    YY  YY   EE        RR    RR -->
+<!-- PPPPPPPP   LL        AAAAAAAA    YYYY    EEEEEE    RRRRRRR  -->
+<!-- PP         LL        AA    AA     YY     EE        RR   RR  -->
+<!-- PP         LLLLLLLL  AA    AA     YY     EEEEEEEE  RR    RR -->
 		{:else if step === 1}
 			<div class="player-info">
 				<h2>Player Information</h2>
@@ -368,11 +364,11 @@ onMount(() => {
 			</div>
 			
 	
-	<!-- PPPPPPP     OOOOOO    SSSSSSS  IIIIIIII  TTTTTTTT  IIIIIIII   OOOOOO   NN    NN -->
-	<!-- PP    PP   OO    OO  SS           II        TT        II     OO    OO  NNN   NN -->
-	<!-- PPPPPPPP   OO    OO   SSSSSS      II        TT        II     OO    OO  NN NN NN -->
-	<!-- PP         OO    OO        SS     II        TT        II     OO    OO  NN  NNNN -->
-	<!-- PP          OOOOOO   SSSSSSS   IIIIIIII     TT     IIIIIIII   OOOOOO   NN    NN -->
+<!-- PPPPPPP     OOOOOO    SSSSSSS  IIIIIIII  TTTTTTTT  IIIIIIII   OOOOOO   NN    NN -->
+<!-- PP    PP   OO    OO  SS           II        TT        II     OO    OO  NNN   NN -->
+<!-- PPPPPPPP   OO    OO   SSSSSS      II        TT        II     OO    OO  NN NN NN -->
+<!-- PP         OO    OO        SS     II        TT        II     OO    OO  NN  NNNN -->
+<!-- PP          OOOOOO   SSSSSSS   IIIIIIII     TT     IIIIIIII   OOOOOO   NN    NN -->
 		{:else if step === 2}
 			<div class="entry-display">
 				<span>
@@ -409,11 +405,11 @@ onMount(() => {
 				</div>
 			</div>
 	
-	<!--  CCCCCCC      AA     RRRRRRR   DDDDDD     SSSSSSS -->
-	<!-- CC          AA  AA   RR    RR  DD    DD  SS       -->
-	<!-- CC         AAAAAAAA  RRRRRRR   DD    DD   SSSSSS  -->
-	<!-- CC         AA    AA  RR   RR   DD    DD        SS -->
-	<!--  CCCCCCC   AA    AA  RR    RR  DDDDDD    SSSSSSS  -->
+<!--  CCCCCCC      AA     RRRRRRR   DDDDDD     SSSSSSS -->
+<!-- CC          AA  AA   RR    RR  DD    DD  SS       -->
+<!-- CC         AAAAAAAA  RRRRRRR   DD    DD   SSSSSS  -->
+<!-- CC         AA    AA  RR   RR   DD    DD        SS -->
+<!--  CCCCCCC   AA    AA  RR    RR  DDDDDD    SSSSSSS  -->
 		{:else if step === 3}
 			<div class="gotoPage-button"> 
 				<button on:click={goToPositionAndPlayer}>{currentHand.position} | 
@@ -455,11 +451,11 @@ onMount(() => {
 					<button class="" on:click={() => {step = 7}}>View History</button> -->
 				<!-- </div> -->
 	
-	<!--    AA       CCCCCCC  TTTTTTTT  IIIIIIII   OOOOOO   NN    NN -->
-	<!--  AA  AA    CC           TT        II     OO    OO  NNN   NN -->
-	<!-- AAAAAAAA   CC           TT        II     OO    OO  NN NN NN -->
-	<!-- AA    AA   CC           TT        II     OO    OO  NN  NNNN -->
-	<!-- AA    AA    CCCCCCC     TT     IIIIIIII   OOOOOO   NN    NN -->
+<!--    AA       CCCCCCC  TTTTTTTT  IIIIIIII   OOOOOO   NN    NN -->
+<!--  AA  AA    CC           TT        II     OO    OO  NNN   NN -->
+<!-- AAAAAAAA   CC           TT        II     OO    OO  NN NN NN -->
+<!-- AA    AA   CC           TT        II     OO    OO  NN  NNNN -->
+<!-- AA    AA    CCCCCCC     TT     IIIIIIII   OOOOOO   NN    NN -->
 		{:else if step === 4}
 				<div class="gotoPage-button"> 
 					<button on:click={goToPositionAndPlayer}>{currentHand.position} | 
@@ -490,11 +486,11 @@ onMount(() => {
 					<input id="raise-amount" type="text" bind:value={currentHand.raiseAmount} />
 				</div>
 	
-	<!-- RRRRRRR    EEEEEEEE   SSSSSSS  UU    UU  LL        TTTTTTTT -->						
-	<!-- RR    RR   EE        SS        UU    UU  LL           TT    -->						
-	<!-- RRRRRRR    EEEEEE     SSSSSS   UU    UU  LL           TT    -->						
-	<!-- RR   RR    EE              SS  UU    UU  LL           TT    -->						
-	<!-- RR    RR   EEEEEEEE  SSSSSSS    UUUUUU   LLLLLLLL     TT    -->						
+<!-- RRRRRRR    EEEEEEEE   SSSSSSS  UU    UU  LL        TTTTTTTT -->						
+<!-- RR    RR   EE        SS        UU    UU  LL           TT    -->						
+<!-- RRRRRRR    EEEEEE     SSSSSS   UU    UU  LL           TT    -->						
+<!-- RR   RR    EE              SS  UU    UU  LL           TT    -->						
+<!-- RR    RR   EEEEEEEE  SSSSSSS    UUUUUU   LLLLLLLL     TT    -->						
 		{:else if step === 5}
 			<div class="gotoPage-button"> 
 				<button on:click={goToPositionAndPlayer}>{currentHand.position} | 
@@ -516,11 +512,11 @@ onMount(() => {
 				</div>
 			</div>
 	
-	<!-- NN    NN    OOOOOO   TTTTTTTT  EEEEEEEE   SSSSSSS -->						
-	<!-- NNN   NN   OO    OO     TT     EE        SS       -->						
-	<!-- NN NN NN   OO    OO     TT     EEEEEE     SSSSSS  -->						
-	<!-- NN  NNNN   OO    OO     TT     EE              SS -->						
-	<!-- NN    NN    OOOOOO      TT     EEEEEEEE  SSSSSSS  -->						
+<!-- NN    NN    OOOOOO   TTTTTTTT  EEEEEEEE   SSSSSSS -->						
+<!-- NNN   NN   OO    OO     TT     EE        SS       -->						
+<!-- NN NN NN   OO    OO     TT     EEEEEE     SSSSSS  -->						
+<!-- NN  NNNN   OO    OO     TT     EE              SS -->						
+<!-- NN    NN    OOOOOO      TT     EEEEEEEE  SSSSSSS  -->						
 		 {:else if step === 6}
 			<div class="gotoPage-button"> 
 				<button on:click={goToPositionAndPlayer}>{currentHand.position} | 
@@ -551,7 +547,7 @@ onMount(() => {
 				</div>
 			{:else}
 				<div class="confirm">
-					<button class="confirm-button" on:click={goToHistory()}>Back to Hand History</button>
+					<button class="confirm-button" on:click={goToHistory}>Back to Hand History</button>
 				</div>
 			{/if}
 		
@@ -561,38 +557,34 @@ onMount(() => {
 <!-- HH    HH      II           SS     TT     OO    OO  RR   RR      YY    -->						
 <!-- HH    HH   IIIIIIII  SSSSSSS      TT      OOOOOO   RR    RR     YY    -->											
 		{:else if step === 7}
-		<div>
-			{#each handHistory as hand}
-				<div class="gotoPage-button">
-					<button on:click={goToNotes(hand)}>
-						{hand.position} |
-						{hand.card1} {hand.card2} {hand.suited} | {hand.toCall} to call, {hand.action} 
-						{hand.action === 'Raise' ? hand.raiseAmount : ' '} | {hand.result}
-					</button>
-				</div>
-			{/each}
+			<div class="game-history">
+				{#each handHistory as hand}
+						<div class={(hand.flag === "Flag") ? "gotoFlaggedHand" : "gotoPage-button"}>
+							<button on:click={goToNotes(hand)}>
+								{hand.position} |
+								{hand.card1} {hand.card2} {hand.suited} | {hand.toCall} to call, {hand.action} 
+								{hand.action === 'Raise' ? hand.raiseAmount : ' '} | {hand.result}
+							</button>
+						</div>
+				{/each}
+			</div>
 			<div class="confirm">
 				<button class="confirm-button" on:click={goToSessions}>Back to Sessions</button>
 			</div>
-		</div>
-
 		{/if}
 	</div>
 
-	<style>
-	/*  CCCCCCC    SSSSSSS   SSSSSSS */
-	/* CC         SS        SS       */
-	/* CC          SSSSSS    SSSSSS  */
-	/* CC               SS        SS */
-	/*  CCCCCCC   SSSSSSS   SSSSSSS  */
+<style>
+/*  CCCCCCC    SSSSSSS   SSSSSSS */
+/* CC         SS        SS       */
+/* CC          SSSSSS    SSSSSS  */
+/* CC               SS        SS */
+/*  CCCCCCC   SSSSSSS   SSSSSSS  */
 	
 		.container {
-			/* height: 600px;
-			width: 450px; */
-			/* height: -webkit-fill-available; */
 			height: 100dvh;
 			background: #D9D9D9;
-			border-radius: 8px;
+			border-radius: 6px;
 			box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 			display: flex;
 			flex-direction: column;
@@ -603,7 +595,7 @@ onMount(() => {
 		.container button {
 			font-size: 20px;
 			border: 3px solid #201b8a;
-			border-radius: 8px;
+			border-radius: 6px;
 			background-color: #f8f9fa;
 			color: #007bff;
 			padding: 2%;
@@ -650,7 +642,6 @@ onMount(() => {
 			width: 100%;
 		}
 	
-
 		.container label {
 			font-weight: bold;
 			margin-bottom: 1%;
@@ -658,7 +649,6 @@ onMount(() => {
 			display: flex;
 			align-items: center;
 		}
-
 
 		.game-history {
 			flex-grow: 1;
@@ -676,7 +666,16 @@ onMount(() => {
 			border-color: #03511a;
 			color: #000000;
 			font-size: 20px;
-			border-radius: 4px;
+			border-radius: 6px;
+			margin-bottom: 1%;
+		}
+
+		.gotoFlaggedHand button{
+			background-color: #af2020;
+			border-color: #430606;
+			color: #000000;
+			font-size: 20px;
+			border-radius: 6px;
 			margin-bottom: 1%;
 		}
 	
@@ -823,9 +822,7 @@ onMount(() => {
 		}
 	
 		.flag-grid {
-			/* flex-grow: 1; */
 			display: flex;
-			/* flex-wrap: wrap; */
 		}
 	
 		.flag button {
@@ -868,12 +865,7 @@ onMount(() => {
 		width: 100%;
 		height: 100%;
 	}
-	
 
-	.backspace-icon {
-		background-color: #ce9e52;
-		color: #c60d0d;
-		font-size: 24px;
-	}
 
-	</style>
+
+</style>
