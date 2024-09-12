@@ -652,6 +652,7 @@ onMount(() => {
 
 		.game-history {
 			flex-grow: 1;
+			overflow-y: auto;
 		}
 	
 		.side-by-side-grid {
