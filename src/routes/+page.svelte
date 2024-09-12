@@ -589,8 +589,8 @@ onMount(() => {
 		.container {
 			/* height: 600px;
 			width: 450px; */
-			height: -webkit-fill-available;
-			/* height: 100vh; */
+			/* height: -webkit-fill-available; */
+			height: 100dvh;
 			background: #D9D9D9;
 			border-radius: 8px;
 			box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
