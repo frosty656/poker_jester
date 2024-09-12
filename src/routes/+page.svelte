@@ -180,22 +180,6 @@ onMount(() => {
 		const value = localStorage.getItem(key);
 		const gameDetails = JSON.parse(value);
 		handHistory = gameDetails.handHistory ?? [];
-		// session.player = gameDetails.player;
-		// session.venue = gameDetails.venue;
-		// session.date = gameDetails.date;
-		// currentHand.position = handHistory['position'];
-		// currentHand.playerCount = handHistory.playerCount;
-		// currentHand.card1 = handHistory.card1;
-		// currentHand.card2 = handHistory.card2;
-		// currentHand.suited = handHistory.suited;
-		// currentHand.toCall = handHistory.toCall;
-		// currentHand.action = handHistory.action;
-		// currentHand.raiseAmount = handHistory.raiseAmount;
-		// currentHand.result = handHistory.result;
-		// currentHand.notes = handHistory.notes;
-		// currentHand.SB = handHistory.SB;
-		// currentHand.BB = handHistory.BB;
-		// currentHand.flag = handHistory.flag;
 		handReview = 1;
 		step = 7;
 	}
@@ -224,18 +208,13 @@ onMount(() => {
 			BB: currentHand.BB,
 			flag: currentHand.flag
 		});
-		// sessionValues.push({
-		// 	player: session.player,
-		// 	venue: session.venue,
-		// 	date: session.date
-		// })
 		const key = `${session.player} - ${session.venue} - ${session.date}`;
-		// const value = JSON.stringify({ session, handHistory });
 		const value = JSON.stringify({ handHistory });
 		localStorage.setItem(key, value);
 		currentHand.suited = 'Offsuit';
 		currentHand.card1 = null;
 		currentHand.card2 = null;
+		currentHand.toCall = currentHand.SB;
 		currentHand.notes = '';
 		currentHand.flag = 'No Flag';
 	}
@@ -474,7 +453,7 @@ onMount(() => {
 				</div>
 				<div class="side-by-side">
 						<label for="toCall">To call:</label>
-						<input id="toCall" type="text" bind:value={currentHand.toCall} />
+						<input id="toCall" type="text" inputmode="numeric" bind:value={currentHand.toCall} />
 				</div>
 				<div class="action">
 					{#each actions as action}
@@ -483,7 +462,7 @@ onMount(() => {
 				</div>
 				<div class="side-by-side">
 					<label for="raise-amount">Raise amount:</label>
-					<input id="raise-amount" type="text" bind:value={currentHand.raiseAmount} />
+					<input id="raise-amount" type="text" inputmode="numeric" bind:value={currentHand.raiseAmount} />
 				</div>
 	
 <!-- RRRRRRR    EEEEEEEE   SSSSSSS  UU    UU  LL        TTTTTTTT -->						
@@ -582,7 +561,7 @@ onMount(() => {
 /*  CCCCCCC   SSSSSSS   SSSSSSS  */
 	
 		.container {
-			height: 90dvh;
+			height: 97dvh;
 			background: #D9D9D9;
 			border-radius: 6px;
 			box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
