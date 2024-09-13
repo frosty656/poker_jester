@@ -27,16 +27,19 @@ let currentHand = { suited: 'Offsuit',
 					result: '',
 					raiseAmount: 6,
 					notes: '' ,
-					flag: 'No Flag'
+					flag: 'No Flag',
+					toFlop: 2
 				};
 const positionList = ['BB', 'SB', 'B', 'CO', 'HJ', 'LJ', 'UTG', 'UTG1', 'UTG2'];
 let positions = ['BB', 'SB', 'B', 'CO', 'HJ', 'LJ', 'UTG', 'UTG1'];
 const actions = ['Fold', 'Call', 'Raise'];
 const cards = ['A', 'K', 'Q', 'J', 'T', '9', '8', '7', '6', '5', '4', '3', '2'];
 const suited = ['Suited', 'Offsuit'];
-const players = [2, 3, 4, 5, 6, 7, 8, 9];
+const playersList = [2, 3, 4, 5, 6, 7, 8, 9];
+let players = [2, 3, 4, 5, 6, 7, 8]
 const results = ['Lost Flop', 'Won Flop', 'Lost Turn', 'Won Turn', 'Lost River', 'Won River', 'Lost Showdown', 'Won Showdown']
 const flags = ['Flag', 'No Flag']
+const afterReview = ['Add Hand','Hand History']
 let currentPosition = 2;
 let handReview = -1;
 let handHistory = [];
@@ -46,7 +49,6 @@ onMount(() => {
 	for (let i = 0; i < localStorage.length; i++) {
 		const key = localStorage.key(i);
 		gameHistory.push(key);
-		// console.log(key);
 	}
 	step = 0;
 });
@@ -66,6 +68,12 @@ onMount(() => {
 
 	function handlePlayers(p) {
 		currentHand.playerCount = parseInt(p);
+		players = [];
+		{console.log(players)}
+		for (let i = 0; i < currentHand.playerCount; i++) {
+			console.log(players)
+			players.push(playersList[i]);
+		}
 		positions = [];
 		for (let i = 0; i < Math.min(6, currentHand.playerCount); i++) {
 			positions.push(positionList[i]);
@@ -94,9 +102,14 @@ onMount(() => {
 		}
 	}
 
-	function handleAction(action) {
+	function handleActionSelection(action) {
 		currentHand.action = action;
-		if (action === 'Fold') {
+	}
+
+	function handleAction(p) {
+		currentHand.toFlop = p;
+		currentHand.notes = p + ' to flop ';
+		if (currentHand.action === 'Fold') {
 			currentHand.result = 'Fold';
 			step = 6
 		}
@@ -106,9 +119,25 @@ onMount(() => {
 	}
 
 	function handleResult(result) {
-		// console.log(result);
 		currentHand.result = result;
 		step = 6;
+	}
+
+	function handleAfterReview(a) {
+		if (a === 'Add Hand') {
+			currentHand.suited = 'Offsuit';
+			currentHand.card1 = null;
+			currentHand.card2 = null;
+			currentHand.toCall = currentHand.BB;
+			currentHand.notes = '';
+			currentHand.flag = 'No Flag';
+			currentHand.toFlop = 2;
+			handReview = 0;
+			goToCardSelection();
+		}
+		else {
+			goToHistory();
+		}
 	}
 
 	function handleToggleSuited(s) {
@@ -206,7 +235,11 @@ onMount(() => {
 			notes: currentHand.notes,
 			SB: currentHand.SB,
 			BB: currentHand.BB,
-			flag: currentHand.flag
+			flag: currentHand.flag,
+			toFlop: currentHand.toFlop,
+			player: session.player,
+			venue: session.venue,
+			date: session.date
 		});
 		const key = `${session.player} - ${session.venue} - ${session.date}`;
 		const value = JSON.stringify({ handHistory });
@@ -214,9 +247,10 @@ onMount(() => {
 		currentHand.suited = 'Offsuit';
 		currentHand.card1 = null;
 		currentHand.card2 = null;
-		currentHand.toCall = currentHand.SB;
+		currentHand.toCall = currentHand.BB;
 		currentHand.notes = '';
 		currentHand.flag = 'No Flag';
+		currentHand.toFlop = 2;
 	}
 
 // JJJJJJJJ   UU    UU MM      MM PPPPPPP             PPPPPPP      AA      GGGGGG   EEEEEEEE
@@ -244,6 +278,7 @@ onMount(() => {
 		currentHand.SB = 1;
 		currentHand.BB = 2;
 		currentHand.flag = 'No Flag';
+		currentHand.toFlop = 2;
 		session.date = `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
 		handReview = 0;
 		step = 1;
@@ -284,6 +319,10 @@ onMount(() => {
 		currentHand.SB = h.SB;
 		currentHand.BB = h.BB;
 		currentHand.flag = h.flag;
+		currentHand.toFlop = h.toFlop;
+		session.player = h.player;
+		session.venue = h.venue;
+		session.date = h.date;
 		step = 6;
 	}
 
@@ -358,7 +397,7 @@ onMount(() => {
 			<div class="player-position">
 				<div class="player-selection">
 					<label for="player-selection">Players</label>
-						{#each players as p}
+						{#each playersList as p}
 								<button on:click={() => handlePlayers(p)}>
 									{p}
 								</button>
@@ -453,17 +492,25 @@ onMount(() => {
 				</div>
 				<div class="side-by-side">
 						<label for="toCall">To call:</label>
-						<input id="toCall" type="text" inputmode="numeric" bind:value={currentHand.toCall} />
+						<input id="toCall" type="text" inputmode="numeric" 
+						on:focus="{event => event.target.select()}" bind:value={currentHand.toCall} />
 				</div>
 				<div class="action">
 					{#each actions as action}
-						<button on:click={() => handleAction(action)}>{action}</button>
+						<button on:click={() => handleActionSelection(action)}>{action}</button>
 					{/each}
 				</div>
 				<div class="side-by-side">
 					<label for="raise-amount">Raise amount:</label>
-					<input id="raise-amount" type="text" inputmode="numeric" bind:value={currentHand.raiseAmount} />
+					<input id="raise-amount" type="text" inputmode="numeric" 
+					on:focus="{event => event.target.select()}" bind:value={currentHand.raiseAmount} />
 				</div>
+				<div class="to-flop">
+					{#each players as p}
+						<button on:click={() => handleAction(p)}>{p}</button>
+					{/each}
+				</div>
+
 	
 <!-- RRRRRRR    EEEEEEEE   SSSSSSS  UU    UU  LL        TTTTTTTT -->						
 <!-- RR    RR   EE        SS        UU    UU  LL           TT    -->						
@@ -525,9 +572,18 @@ onMount(() => {
 					</div>
 				</div>
 			{:else}
-				<div class="confirm">
-					<button class="confirm-button" on:click={goToHistory}>Back to Hand History</button>
+			<div class="flag">
+				<div class="flag-grid">
+					{#each afterReview as a}
+						<button on:click={() => handleAfterReview(a)}>{a}</button>
+					{/each}
 				</div>
+			</div>
+
+
+				<!-- <div class="confirm">
+					<button class="confirm-button" on:click={goToHistory}>Back to Hand History</button>
+				</div> -->
 			{/if}
 		
 <!-- HH    HH   IIIIIIII   SSSSSSS  TTTTTTTT   OOOOOO   RRRRRRR   YY    YY -->						
@@ -560,179 +616,188 @@ onMount(() => {
 /* CC               SS        SS */
 /*  CCCCCCC   SSSSSSS   SSSSSSS  */
 	
-		.container {
-			height: 97dvh;
-			background: #D9D9D9;
-			border-radius: 6px;
-			box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-			display: flex;
-			flex-direction: column;
-			padding: 0.5%;
-			row-gap: 1%;
-		}
-	
-		.container button {
-			font-size: 20px;
-			border: 3px solid #201b8a;
-			border-radius: 6px;
-			background-color: #f8f9fa;
-			color: #007bff;
-			padding: 2%;
-			width: 100%; 
-		}
+	.container {
+		height: 97dvh;
+		background: #D9D9D9;
+		border-radius: 6px;
+		box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+		display: flex;
+		flex-direction: column;
+		padding: 0.5%;
+		row-gap: 1%;
+	}
 
-		.confirm button {
+	.container button {
+		font-size: 20px;
+		border: 3px solid #201b8a;
+		border-radius: 6px;
+		background-color: #f8f9fa;
+		color: #007bff;
+		padding: 2%;
+		width: 100%; 
+	}
+
+	.confirm button {
+		background-color: #28a745;
+		border-color: #023a0f;
+		color: #000000;
+		
+	}
+	.delete-button button {
+		background-color: #dc3545;
+		border-color: #510d01;
+		color: #ffffff;
+		height: 100%;
+	}
+
+	.side-by-side {
+		display: flex;
+		gap: 1%;
+	}
+
+	.flexfill {
+		flex-grow: 1;
+	}
+
+	.entry-display {
+		font-size: 20px;
+		border: 3px solid #7d4f06;
+		border-radius: 4px;
+		background-color: #ce9e52;
+		text-align: center;
+		padding: 2%;
+	}
+
+	.container input {
+		padding: 10px;
+		font-size: 16px;
+		border: 1px solid #ccc;
+		border-radius: 4px;
+		box-sizing: border-box;
+		width: 100%;
+	}
+
+	.container label {
+		font-weight: bold;
+		margin-bottom: 1%;
+		white-space: nowrap;
+		display: flex;
+		align-items: center;
+	}
+
+	.game-history {
+		flex-grow: 1;
+		overflow-y: auto;
+	}
+
+	.side-by-side-grid {
+		display: grid;
+		grid-template-columns: repeat(2, auto);
+		justify-content: space-between;
+		flex-grow: 1;
+	}
+
+	.to-flop button {
+			flex: 1;
+			margin: 1%;
 			background-color: #28a745;
 			border-color: #023a0f;
 			color: #000000;
-			
-		}
-		.delete-button button {
-			background-color: #dc3545;
-			border-color: #510d01;
-			color: #ffffff;
-			height: 100%;
+			width: 30%;
 		}
 
-		.side-by-side {
-			display: flex;
-			gap: 1%;
-		}
+	.gotoPage-button button{
+		background-color: #37cd64;
+		border-color: #03511a;
+		color: #000000;
+		font-size: 20px;
+		border-radius: 6px;
+		margin-bottom: 1%;
+	}
 
-		.flexfill {
-			flex-grow: 1;
-		}
-
-		.entry-display {
-			font-size: 20px;
-			border: 3px solid #7d4f06;
-			border-radius: 4px;
-			background-color: #ce9e52;
-			text-align: center;
-			padding: 2%;
-		}
-
-		.container input {
-			padding: 10px;
-			font-size: 16px;
-			border: 1px solid #ccc;
-			border-radius: 4px;
-			box-sizing: border-box;
-			width: 100%;
-		}
-	
-		.container label {
-			font-weight: bold;
-			margin-bottom: 1%;
-			white-space: nowrap;
-			display: flex;
-			align-items: center;
-		}
-
-		.game-history {
-			flex-grow: 1;
-			overflow-y: auto;
-		}
-	
-		.side-by-side-grid {
-			display: grid;
-			grid-template-columns: repeat(2, auto);
-			justify-content: space-between;
-			flex-grow: 1;
-		}
-	
-		.gotoPage-button button{
-			background-color: #37cd64;
-			border-color: #03511a;
-			color: #000000;
-			font-size: 20px;
-			border-radius: 6px;
-			margin-bottom: 1%;
-		}
-
-		.gotoFlaggedHand button{
-			background-color: #af2020;
-			border-color: #430606;
-			color: #000000;
-			font-size: 20px;
-			border-radius: 6px;
-			margin-bottom: 1%;
-		}
+	.gotoFlaggedHand button{
+		background-color: #af2020;
+		border-color: #430606;
+		color: #000000;
+		font-size: 20px;
+		border-radius: 6px;
+		margin-bottom: 1%;
+	}
 	
 /* PPPPPPP     OOOOOO    SSSSSSS  IIIIIIII  TTTTTTTT  IIIIIIII   OOOOOO   NN    NN */
 /* PP    PP   OO    OO  SS           II        TT        II     OO    OO  NNN   NN */
 /* PPPPPPPP   OO    OO   SSSSSS      II        TT        II     OO    OO  NN NN NN */
 /* PP         OO    OO        SS     II        TT        II     OO    OO  NN  NNNN */
 /* PP          OOOOOO   SSSSSSS   IIIIIIII     TT     IIIIIIII   OOOOOO   NN    NN */
-		.player-position {
-			display: flex;
-			flex-grow: 1;
-		}
+	.player-position {
+		display: flex;
+		flex-grow: 1;
+	}
 
-		.player-selection {
-			display: flex;
-			flex-direction: column;
-			width: 50%;
-		}
-		.player-selection button{
-			width: 100%;
-			margin:1%;
-			flex-grow: 1;
-		}
+	.player-selection {
+		display: flex;
+		flex-direction: column;
+		width: 50%;
+	}
+	.player-selection button{
+		width: 100%;
+		margin:1%;
+		flex-grow: 1;
+	}
 
-		.position-selection {
-			display: flex;
-			flex-direction: column;
-			width: 100%;
-		}
-		.position-selection button{
-			width: 100%;
-			margin:1%;
-			flex-grow: 1;
-			background-color: #28a745;
-			border-color: #023a0f;
-			color: #000000;
-		}
+	.position-selection {
+		display: flex;
+		flex-direction: column;
+		width: 100%;
+	}
+	.position-selection button{
+		width: 100%;
+		margin:1%;
+		flex-grow: 1;
+		background-color: #28a745;
+		border-color: #023a0f;
+		color: #000000;
+	}
 
 /*  CCCCCCC      AA     RRRRRRR   DDDDDD     SSSSSSS */
 /* CC          AA  AA   RR    RR  DD    DD  SS       */
 /* CC         AAAAAAAA  RRRRRRR   DD    DD   SSSSSS  */
 /* CC         AA    AA  RR   RR   DD    DD        SS */
 /*  CCCCCCC   AA    AA  RR    RR  DDDDDD    SSSSSSS  */
-		.cards {
-			display: flex;
-			flex-grow: 1;
-		}
+	.cards {
+		display: flex;
+		flex-grow: 1;
+	}
 
-		.card-grid {
-			display: flex;
-			flex-grow: 1;
-			width: 100%;
-		}
+	.card-grid {
+		display: flex;
+		flex-grow: 1;
+		width: 100%;
+	}
 
-		.card {
-			display: flex;
-			flex-wrap: wrap;
-			flex-grow: 1;
-		}
+	.card {
+		display: flex;
+		flex-wrap: wrap;
+		flex-grow: 1;
+	}
 
-		.card button{
-			margin:1%;
-			flex-grow: 1;
-			width: 30%;
-		}
+	.card button{
+		margin:1%;
+		flex-grow: 1;
+		width: 30%;
+	}
 
-		.suited-grid {
-			flex-grow: 1;
-			display: flex;
-			flex-wrap: wrap;
-		}
+	.suited-grid {
+		flex-grow: 1;
+		display: flex;
+		flex-wrap: wrap;
+	}
 
-		.suited-grid button{
-			margin:1%;
-			flex-grow: 1;
-			width: 45%;
-		}
+	.suited-grid button{
+		margin:1%;
+		flex-grow: 1;
+		width: 45%;
+	}
 	
 /*    AA       CCCCCCC  TTTTTTTT  IIIIIIII   OOOOOO   NN    NN */						
 /*  AA  AA    CC           TT        II     OO    OO  NNN   NN */						
@@ -740,19 +805,19 @@ onMount(() => {
 /* AA    AA   CC           TT        II     OO    OO  NN  NNNN */						
 /* AA    AA    CCCCCCC     TT     IIIIIIII   OOOOOO   NN    NN */						
 
-		.action {
-			flex-grow: 1;
-			display: flex;
-			flex-direction: column;
-		}
+	.action {
+		flex-grow: 1;
+		display: flex;
+		flex-direction: column;
+	}
 
-		.action button {
-			flex-grow: 1;
-			margin: 1%;
-			background-color: #28a745;
-			border-color: #023a0f;
-			color: #000000;
-		}
+	.action button {
+		flex-grow: 1;
+		margin: 1%;
+		/* background-color: #28a745;
+		border-color: #023a0f;
+		color: #000000; */
+	}
 
 /* RRRRRRR    EEEEEEEE   SSSSSSS  UU    UU  LL        TTTTTTTT */						
 /* RR    RR   EE        SS        UU    UU  LL           TT    */						
@@ -760,59 +825,59 @@ onMount(() => {
 /* RR   RR    EE              SS  UU    UU  LL           TT    */						
 /* RR    RR   EEEEEEEE  SSSSSSS    UUUUUU   LLLLLLLL     TT    */						
 
-		.result {
-			flex-grow: 1;
-			display: flex;
-			flex-direction: column;
-		}
+	.result {
+		flex-grow: 1;
+		display: flex;
+		flex-direction: column;
+	}
 
-		.result-grid {
-			flex-grow: 1;
-			display: flex;
-			flex-wrap: wrap;
-		}
-	
-		.result button {
-			margin: 1%;
-			background-color: #28a745;
-			border-color: #023a0f;
-			color: #000000;
-			width: 48%;
-		}
+	.result-grid {
+		flex-grow: 1;
+		display: flex;
+		flex-wrap: wrap;
+	}
+
+	.result button {
+		margin: 1%;
+		background-color: #28a745;
+		border-color: #023a0f;
+		color: #000000;
+		width: 48%;
+	}
 
 /* NN    NN    OOOOOO   TTTTTTTT  EEEEEEEE   SSSSSSS */						
 /* NNN   NN   OO    OO     TT     EE        SS       */						
 /* NN NN NN   OO    OO     TT     EEEEEE     SSSSSS  */						
 /* NN  NNNN   OO    OO     TT     EE              SS */						
 /* NN    NN    OOOOOO      TT     EEEEEEEE  SSSSSSS  */						
-		.notes {
-			flex-grow: 1;
-			display: flex;
-			flex-direction: column;
-		}
+	.notes {
+		flex-grow: 1;
+		display: flex;
+		flex-direction: column;
+	}
 
-		textarea {
-			flex-grow: 1;
-			font-size: 20px;
-			border: 1px solid #ccc;
-			border-radius: 4px;
-			background-color: #f8f9fa;
-			width: 100%;
-			text-align: center;
-		}
-	
-		.flag-grid {
-			display: flex;
-		}
-	
-		.flag button {
-			flex: 1;
-			margin: 1%;
-			background-color: #28a745;
-			border-color: #023a0f;
-			color: #000000;
-			width: 48%;
-		}
+	textarea {
+		flex-grow: 1;
+		font-size: 20px;
+		border: 1px solid #ccc;
+		border-radius: 4px;
+		background-color: #f8f9fa;
+		width: 100%;
+		text-align: center;
+	}
+
+	.flag-grid {
+		display: flex;
+	}
+
+	.flag button {
+		flex: 1;
+		margin: 1%;
+		background-color: #28a745;
+		border-color: #023a0f;
+		color: #000000;
+		width: 48%;
+	}
 
 	.backspace-button{
 			margin:1%;
@@ -846,6 +911,10 @@ onMount(() => {
 		height: 100%;
 	}
 
+	/* .toFlop {
+			display: flex;
+		} */
+	
 
 
 </style>
