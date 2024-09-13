@@ -68,9 +68,9 @@ onMount(() => {
 
 	function handlePlayers(p) {
 		currentHand.playerCount = parseInt(p);
-		players = [];
+		players = ['0'];
 		{console.log(players)}
-		for (let i = 0; i < currentHand.playerCount; i++) {
+		for (let i = 0; i < currentHand.playerCount - 1; i++) {
 			console.log(players)
 			players.push(playersList[i]);
 		}
@@ -103,17 +103,26 @@ onMount(() => {
 	}
 
 	function handleActionSelection(action) {
-		currentHand.action = action;
+		if (action === 'Fold') {
+			currentHand.action = 'Fold';
+			currentHand.result = 'Fold';
+			step = 6;
+		}
+		else {
+			currentHand.action = action;
+		}
 	}
 
 	function handleAction(p) {
+		console.log(p);
 		currentHand.toFlop = p;
-		currentHand.notes = p + ' to flop ';
-		if (currentHand.action === 'Fold') {
-			currentHand.result = 'Fold';
-			step = 6
+		if (p === '0') {
+			currentHand.result = 'Won Preflop';
+			currentHand.notes = 'Won Preflop';
+			step = 6;
 		}
 		else {
+			currentHand.notes = p + ' to flop ';
 			step = 5;
 		}
 	}
@@ -703,7 +712,7 @@ onMount(() => {
 			background-color: #28a745;
 			border-color: #023a0f;
 			color: #000000;
-			width: 30%;
+			width: 31%;
 		}
 
 	.gotoPage-button button{
@@ -813,10 +822,7 @@ onMount(() => {
 
 	.action button {
 		flex-grow: 1;
-		margin: 1%;
-		/* background-color: #28a745;
-		border-color: #023a0f;
-		color: #000000; */
+		margin-top: 1%;
 	}
 
 /* RRRRRRR    EEEEEEEE   SSSSSSS  UU    UU  LL        TTTTTTTT */						
