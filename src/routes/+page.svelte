@@ -390,7 +390,6 @@ onMount(() => {
 				<button class="confirm-button" on:click={confirmGameInfo}>Confirm</button>
 			</div>
 			
-	
 <!-- PPPPPPP     OOOOOO    SSSSSSS  IIIIIIII  TTTTTTTT  IIIIIIII   OOOOOO   NN    NN -->
 <!-- PP    PP   OO    OO  SS           II        TT        II     OO    OO  NNN   NN -->
 <!-- PPPPPPPP   OO    OO   SSSSSS      II        TT        II     OO    OO  NN NN NN -->
@@ -412,11 +411,9 @@ onMount(() => {
 								</button>
 						{/each}
 				</div>
-				
 				<div class="position-selection">
 					<label for="position-selection">Position</label>
 						{#each positions as pos}
-								<!-- <button class={pos === currentHand.position ? 'active' : ''} on:click={() => handlePosition(pos)}> -->
 								<button on:click={() => handlePosition(pos)}>
 									{pos}
 								</button>
@@ -474,9 +471,6 @@ onMount(() => {
 				{/each}
 			</div>
 		</div>
-				<!-- <div>
-					<button class="" on:click={() => {step = 7}}>View History</button> -->
-				<!-- </div> -->
 	
 <!--    AA       CCCCCCC  TTTTTTTT  IIIIIIII   OOOOOO   NN    NN -->
 <!--  AA  AA    CC           TT        II     OO    OO  NNN   NN -->
@@ -506,7 +500,10 @@ onMount(() => {
 				</div>
 				<div class="action">
 					{#each actions as action}
-						<button on:click={() => handleActionSelection(action)}>{action}</button>
+						<div class={(action === "Fold") ? "fold button" : "action button"}>
+							<!-- <button class={(action === "Fold") ? "fold" : "button"} on:click={() => handleActionSelection(action)}>{action}</button> -->
+							<button on:click={() => handleActionSelection(action)}>{action}</button>
+						</div>
 					{/each}
 				</div>
 				<div class="side-by-side">
@@ -588,11 +585,6 @@ onMount(() => {
 					{/each}
 				</div>
 			</div>
-
-
-				<!-- <div class="confirm">
-					<button class="confirm-button" on:click={goToHistory}>Back to Hand History</button>
-				</div> -->
 			{/if}
 		
 <!-- HH    HH   IIIIIIII   SSSSSSS  TTTTTTTT   OOOOOO   RRRRRRR   YY    YY -->						
@@ -652,6 +644,7 @@ onMount(() => {
 		color: #000000;
 		
 	}
+
 	.delete-button button {
 		background-color: #dc3545;
 		border-color: #510d01;
@@ -823,6 +816,22 @@ onMount(() => {
 	.action button {
 		flex-grow: 1;
 		margin-top: 1%;
+		height: 100%;
+	}
+
+	.fold {
+		flex-grow: 1;
+		display: flex;
+		flex-direction: column;
+	}
+
+	.fold button {
+		background-color: #28a745;
+		border-color: #023a0f;
+		color: #000000;
+		flex-grow: 1;
+		margin-top: 1%;
+		height: 100%;
 	}
 
 /* RRRRRRR    EEEEEEEE   SSSSSSS  UU    UU  LL        TTTTTTTT */						
@@ -868,7 +877,7 @@ onMount(() => {
 		border: 1px solid #ccc;
 		border-radius: 4px;
 		background-color: #f8f9fa;
-		width: 100%;
+		margin: 0.5%;
 		text-align: center;
 	}
 
@@ -916,11 +925,4 @@ onMount(() => {
 		width: 100%;
 		height: 100%;
 	}
-
-	/* .toFlop {
-			display: flex;
-		} */
-	
-
-
 </style>
