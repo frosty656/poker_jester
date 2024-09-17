@@ -60,7 +60,12 @@ onMount(() => {
 // HH    HH   AA    AA  NN    NN  DDDDDD    LLLLLLLL  EEEEEEEE 						
 	function handlePosition(pos) {
 		currentHand.position = pos;
-		step = 3;
+		if (handReview === 1) {
+			step = 6;
+		}
+		else {
+			step = 3;
+		}
 	}
 
 	function handlePlayers(p) {
@@ -124,7 +129,12 @@ onMount(() => {
 		}
 		else {
 			currentHand.notes = p + ' to flop ';
-			step = 5;
+			if (handReview === 1) {
+				step = 6;
+			}
+			else {
+				step = 5;
+			}
 		}
 	}
 
@@ -205,7 +215,12 @@ onMount(() => {
 	}
 
 	function confirmCardSelection() {
-		step = 4;
+		if (handReview === 1) {
+			step = 6;
+		}
+		else {
+			step = 4;
+		}
 	}
 
 //  SSSSSSS   TTTTTTTT   OOOOOO   RRRRRRR      AA      GGGGGG   EEEEEEEE 						
@@ -295,11 +310,15 @@ onMount(() => {
 	}
 
 	function goToPositionAndPlayer() {
-		step = 2;
+		if (handReview === 0) {
+			step = 2;
+		}
 	}
 
 	function goToCardSelection() {
-		step = 3;
+		if (handReview === 0) {
+			step = 3;
+		}
 	}
 
 	function goToAction() {
@@ -307,11 +326,16 @@ onMount(() => {
 			step = 3;	
 		}
 		else {
-		step = 4;}
+		if (handReview === 0) {
+			step = 4;
+		}
+		}
 	}
 
 	function goToResult() {
-		step = 5;
+		if (handReview === 0) {
+			step = 5;
+		}
 	}
 
 	function goToNotes(h) {
