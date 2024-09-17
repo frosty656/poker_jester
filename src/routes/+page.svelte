@@ -30,13 +30,13 @@ let currentHand = { suited: 'Offsuit',
 					flag: 'No Flag',
 					toFlop: 2
 				};
-const positionList = ['BB', 'SB', 'B', 'CO', 'HJ', 'LJ', 'UTG', 'UTG1', 'UTG2'];
-let positions = ['BB', 'SB', 'B', 'CO', 'HJ', 'LJ', 'UTG', 'UTG1'];
+const positionList = ['BB', 'SB', 'B', 'CO', 'HJ', 'LJ', 'UTG2', 'UTG1', 'UTG'];
+let positions = ['BB', 'SB', 'B', 'CO', 'HJ', 'LJ', 'UTG1', 'UTG'];
 const actions = ['Fold', 'Call', 'Raise'];
 const cards = ['A', 'K', 'Q', 'J', 'T', '9', '8', '7', '6', '5', '4', '3', '2'];
 const suited = ['Suited', 'Offsuit'];
 const playersList = [2, 3, 4, 5, 6, 7, 8, 9];
-let players = [2, 3, 4, 5, 6, 7, 8]
+let players = ['0', 2, 3, 4, 5, 6, 7, 8]
 const results = ['Lost Flop', 'Won Flop', 'Lost Turn', 'Won Turn', 'Lost River', 'Won River', 'Lost Showdown', 'Won Showdown']
 const flags = ['Flag', 'No Flag']
 const afterReview = ['Add Hand','Hand History']
@@ -60,14 +60,15 @@ onMount(() => {
 // HH    HH   AA    AA  NN    NN  DDDDDD    LLLLLLLL  EEEEEEEE 						
 	function handlePosition(pos) {
 		currentHand.position = pos;
-		document.querySelectorAll('.position-selection button').forEach((btn) => {
-			btn.classList.toggle('active', btn.textContent === pos);
-		});
 		step = 3;
 	}
 
 	function handlePlayers(p) {
 		currentHand.playerCount = parseInt(p);
+		document.querySelectorAll('.player-selection button').forEach((btn) => {
+			btn.classList.toggle("active", btn.textContent === p);
+		});
+
 		players = ['0'];
 		{console.log(players)}
 		for (let i = 0; i < currentHand.playerCount - 1; i++) {
@@ -396,6 +397,8 @@ onMount(() => {
 <!-- PP         OO    OO        SS     II        TT        II     OO    OO  NN  NNNN -->
 <!-- PP          OOOOOO   SSSSSSS   IIIIIIII     TT     IIIIIIII   OOOOOO   NN    NN -->
 		{:else if step === 2}
+		console.log(p);
+		console.log(currentHand.playerCount);
 			<div class="entry-display">
 				<span>
 					{currentHand.playerCount ?? ' '} players | {currentHand.position ?? ' '}  |  
@@ -406,9 +409,7 @@ onMount(() => {
 				<div class="player-selection">
 					<label for="player-selection">Players</label>
 						{#each playersList as p}
-								<button on:click={() => handlePlayers(p)}>
-									{p}
-								</button>
+							<button class={(p === currentHand.playerCount) ? "player-selected button" : ""} on:click={() => handlePlayers(p)}>{p}</button>
 						{/each}
 				</div>
 				<div class="position-selection">
@@ -445,7 +446,6 @@ onMount(() => {
 						{currentHand.card1 ?? ' '}
 						{currentHand.card2 ?? ' '}
 						{currentHand.card2 != undefined ? ((currentHand.suited === 'Suited') ? 's' : 'o') : ' '}
-
 					</div>
 				</div>
 			</div>
@@ -500,10 +500,10 @@ onMount(() => {
 				</div>
 				<div class="action">
 					{#each actions as action}
-						<div class={(action === "Fold") ? "fold button" : "action button"}>
+						<!-- <div class={(action === "Fold") ? "fold button" : (action === currentHand.action) ? "player-selected button" : "action button"}> -->
 							<!-- <button class={(action === "Fold") ? "fold" : "button"} on:click={() => handleActionSelection(action)}>{action}</button> -->
-							<button on:click={() => handleActionSelection(action)}>{action}</button>
-						</div>
+							<button class={(action === "Fold") ? "fold button" : (action === currentHand.action) ? "player-selected button" : "action button"} on:click={() => handleActionSelection(action)}>{action}</button>
+						<!-- </div> -->
 					{/each}
 				</div>
 				<div class="side-by-side">
@@ -739,7 +739,7 @@ onMount(() => {
 	.player-selection {
 		display: flex;
 		flex-direction: column;
-		width: 50%;
+		width: 33%;
 	}
 	.player-selection button{
 		width: 100%;
@@ -747,11 +747,29 @@ onMount(() => {
 		flex-grow: 1;
 	}
 
-	.position-selection {
+	.player-selected {
 		display: flex;
 		flex-direction: column;
 		width: 100%;
 	}
+
+	.player-selected.button{
+		width: 100%;
+		margin:1%;
+		flex-grow: 1;
+		background-color: #007bff;
+		color: #f8f9fa;
+		justify-content: center;
+		align-items: center;
+		
+	}
+
+	.position-selection {
+		display: flex;
+		flex-direction: column;
+		width: 67%;
+	}
+
 	.position-selection button{
 		width: 100%;
 		margin:1%;
@@ -817,6 +835,8 @@ onMount(() => {
 		flex-grow: 1;
 		margin-top: 1%;
 		height: 100%;
+		justify-content: center;
+		align-items: center;
 	}
 
 	.fold {
@@ -825,13 +845,15 @@ onMount(() => {
 		flex-direction: column;
 	}
 
-	.fold button {
+	.fold.button {
 		background-color: #28a745;
 		border-color: #023a0f;
 		color: #000000;
 		flex-grow: 1;
 		margin-top: 1%;
 		height: 100%;
+		justify-content: center;
+		align-items: center;
 	}
 
 /* RRRRRRR    EEEEEEEE   SSSSSSS  UU    UU  LL        TTTTTTTT */						
