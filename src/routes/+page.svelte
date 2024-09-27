@@ -380,20 +380,12 @@ onMount(() => {
 		{#if step === 0}
 			{#each gameHistory as game}
 				<div class="side-by-side">
-					<button on:click={() => loadGame(game)}>
-						{game}
-					</button>
-					<div class="delete-button">
-						<button on:click={() => deleteGame(game)}>
-							Delete
-						</button>
-					</div>
+					<button class = "button fullWidth" on:click={() => loadGame(game)}>{game}</button>
+					<button class = "button delete" on:click={() => deleteGame(game)}>Delete</button>
 				</div>
 			{/each}
-			<div class="flexfill"></div>
-			<div class="confirm">
-				<button class="confirm-button" on:click={goToNewGame}>Add New Game</button>
-			</div>
+			<div class="flexHigh"></div>
+			<button class="button confirm" on:click={goToNewGame}>Add New Game</button>
 	
 <!-- PPPPPPP    LL           AA     YY    YY  EEEEEEEE  RRRRRRR  -->
 <!-- PP    PP   LL         AA  AA    YY  YY   EE        RR    RR -->
@@ -401,19 +393,15 @@ onMount(() => {
 <!-- PP         LL        AA    AA     YY     EE        RR   RR  -->
 <!-- PP         LLLLLLLL  AA    AA     YY     EEEEEEEE  RR    RR -->
 		{:else if step === 1}
-			<div class="player-info">
-				<h2>Player Information</h2>
-				<label for="player">Player:</label>
-				<input id="player" type="text" bind:value={session.player} />
-				<label for="venue">Venue:</label>
-				<input id="venue" type="text" bind:value={session.venue} />
-				<label for="date">Date:</label>
-				<input id="date" type="date" bind:value={session.date} />
-			</div>
-			<div class="flexfill"></div>
-			<div class="confirm">
-				<button class="confirm-button" on:click={confirmGameInfo}>Confirm</button>
-			</div>
+			<h2>Player Information</h2>
+			<label for="player">Player:</label>
+			<input id = "player" class="input" type="text" bind:value={session.player} />
+			<label for="venue">Venue:</label>
+			<input id="venue" class="input" type="text" bind:value={session.venue} />
+			<label for="date">Date:</label>
+			<input id="date" class="input" type="date" bind:value={session.date} />
+			<div class="flexHigh"></div>
+			<button class="button confirm fullWidth" on:click={confirmGameInfo}>Confirm</button>
 			
 <!-- PPPPPPP     OOOOOO    SSSSSSS  IIIIIIII  TTTTTTTT  IIIIIIII   OOOOOO   NN    NN -->
 <!-- PP    PP   OO    OO  SS           II        TT        II     OO    OO  NNN   NN -->
@@ -423,23 +411,23 @@ onMount(() => {
 		{:else if step === 2}
 		console.log(p);
 		console.log(currentHand.playerCount);
-			<div class="entry-display">
+			<div class="entryDisplay">
 				<span>
 					{currentHand.playerCount ?? ' '} players | {currentHand.position ?? ' '}  |  
 					{currentHand.SB}/{currentHand.BB}
 				</span>
 			</div>
-			<div class="player-position">
-				<div class="player-selection">
+			<div class="flexWide">
+				<div class="flexHigh">
 					<label for="player-selection">Players</label>
 						{#each playersList as p}
-							<button class={(p === currentHand.playerCount) ? "player-selected button" : ""} on:click={() => handlePlayers(p)}>{p}</button>
+							<button class={(p === currentHand.playerCount) ? "button selected grow" : "button grow"} on:click={() => handlePlayers(p)}>{p}</button>
 						{/each}
 				</div>
-				<div class="position-selection">
+				<div class="flexHigh">
 					<label for="position-selection">Position</label>
 						{#each positions as pos}
-								<button on:click={() => handlePosition(pos)}>
+								<button class = "button confirm grow" on:click={() => handlePosition(pos)}>
 									{pos}
 								</button>
 						{/each}
@@ -460,41 +448,29 @@ onMount(() => {
 <!-- CC         AA    AA  RR   RR   DD    DD        SS -->
 <!--  CCCCCCC   AA    AA  RR    RR  DDDDDD    SSSSSSS  -->
 		{:else if step === 3}
-			<div class="gotoPage-button"> 
-				<button on:click={goToPositionAndPlayer}>{currentHand.position} | 
-					{currentHand.playerCount} players  {currentHand.SB}/{currentHand.BB}</button>
-			</div>
-			<div class="entry-display">
-				<div class="side-by-side-grid">
-					<div>Hand:
+			<button class="button gotoPage" on:click={goToPositionAndPlayer}>{currentHand.position} | 
+				{currentHand.playerCount} players  {currentHand.SB}/{currentHand.BB}</button>
+			<div class="entryDisplay">
+						Hand:
 						{currentHand.card1 ?? ' '}
 						{currentHand.card2 ?? ' '}
 						{currentHand.card2 != undefined ? ((currentHand.suited === 'Suited') ? 's' : 'o') : ' '}
-					</div>
+			</div>
+			<div class="flexHigh">
+				<div class="flexWide">
+					{#each cards as card}
+						<button class = "button wide3 grow" on:click={() => handleCardSelection(card)}>{card}</button>
+					{/each}
+					<button class = "button done grow" on:click={() => handleDone()}>DONE</button>
+					<button class="button backspace grow" on:click={() => handleUndoLastCard()}>DEL</button>
 				</div>
 			</div>
-			<div class="cards">
-				<div class="card-grid">
-					<div class="card">
-						{#each cards as card}
-							<button on:click={() => handleCardSelection(card)}>{card}</button>
-						{/each}
-						<div class="done-button">
-							<button on:click={() => handleDone()}>DONE</button>
-						</div>
-						<div class="backspace-button">
-							<button on:click={() => handleUndoLastCard()}>DEL</button>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="confirm">
-			<div class="suited-grid">
+			<div class="wide">
 				{#each suited as s}
-					<button on:click={() => handleToggleSuited(s)}>{s}</button>
+					<button class = "button confirm wide2" on:click={() => handleToggleSuited(s)}>{s}</button>
 				{/each}
 			</div>
-		</div>
+		<!-- </div> -->
 	
 <!--    AA       CCCCCCC  TTTTTTTT  IIIIIIII   OOOOOO   NN    NN -->
 <!--  AA  AA    CC           TT        II     OO    OO  NNN   NN -->
@@ -502,42 +478,33 @@ onMount(() => {
 <!-- AA    AA   CC           TT        II     OO    OO  NN  NNNN -->
 <!-- AA    AA    CCCCCCC     TT     IIIIIIII   OOOOOO   NN    NN -->
 		{:else if step === 4}
-				<div class="gotoPage-button"> 
-					<button on:click={goToPositionAndPlayer}>{currentHand.position} | 
+					<button class="button gotoPage" on:click={goToPositionAndPlayer}>{currentHand.position} | 
 						{currentHand.playerCount} players  {currentHand.SB}/{currentHand.BB}</button>
-					<button on:click={goToCardSelection}>
+					<button class="button gotoPage" on:click={goToCardSelection}>
 						{currentHand.card1 ?? ' '}
 						{currentHand.card2 ?? ' '}
 						{(currentHand.suited === 'Suited' ? 's' : 'o')}
 					</button>
-				</div>
-				<div class="entry-display">
-					<span
-						>To call: {currentHand.toCall}, {currentHand.action}
+					<div class="entryDisplay">To call: {currentHand.toCall}, {currentHand.action}
 						{currentHand.action === 'Raise' ? currentHand.raiseAmount : ' '}
-					</span>
-				</div>
-				<div class="side-by-side">
-						<label for="toCall">To call:</label>
-						<input id="toCall" type="text" inputmode="numeric" 
-						on:focus="{event => event.target.select()}" bind:value={currentHand.toCall} />
-				</div>
-				<div class="action">
+					</div>
+
+					<label>
+						To call: 
+						<input class="input" inputmode="numeric" on:focus="{event => event.target.select()}" bind:value={currentHand.toCall} />
+					</label>
+				<div class="flexHigh">
 					{#each actions as action}
-						<!-- <div class={(action === "Fold") ? "fold button" : (action === currentHand.action) ? "player-selected button" : "action button"}> -->
-							<!-- <button class={(action === "Fold") ? "fold" : "button"} on:click={() => handleActionSelection(action)}>{action}</button> -->
-							<button class={(action === "Fold") ? "fold button" : (action === currentHand.action) ? "player-selected button" : "action button"} on:click={() => handleActionSelection(action)}>{action}</button>
-						<!-- </div> -->
+							<button class={(action === "Fold") ? "button confirm grow" : (action === currentHand.action) ? "button selected grow" : "button grow"} on:click={() => handleActionSelection(action)}>{action}</button>
 					{/each}
 				</div>
-				<div class="side-by-side">
-					<label for="raise-amount">Raise amount:</label>
-					<input id="raise-amount" type="text" inputmode="numeric" 
-					on:focus="{event => event.target.select()}" bind:value={currentHand.raiseAmount} />
-				</div>
-				<div class="to-flop">
+				<label>
+					Raise amount: 
+					<input class="input" inputmode="numeric" on:focus="{event => event.target.select()}" bind:value={currentHand.raiseAmount} />
+				</label>
+				<div class="wide">
 					{#each players as p}
-						<button on:click={() => handleAction(p)}>{p}</button>
+						<button class = "button confirm wide3" on:click={() => handleAction(p)}>{p}</button>
 					{/each}
 				</div>
 
@@ -548,24 +515,20 @@ onMount(() => {
 <!-- RR   RR    EE              SS  UU    UU  LL           TT    -->						
 <!-- RR    RR   EEEEEEEE  SSSSSSS    UUUUUU   LLLLLLLL     TT    -->						
 		{:else if step === 5}
-			<div class="gotoPage-button"> 
-				<button on:click={goToPositionAndPlayer}>{currentHand.position} | 
-					{currentHand.playerCount} players  {currentHand.SB}/{currentHand.BB}</button>
-				<button on:click={goToCardSelection}>
-					{currentHand.card1 ?? ' '}
-					{currentHand.card2 ?? ' '}
-					{(currentHand.suited === 'Suited' ? 's' : 'o')}
-				</button>
-				<button on:click={goToAction} >{currentHand.toCall} to call, 
-					{currentHand.action} {currentHand.action === 'Raise' ? 
-					currentHand.raiseAmount : ' '}</button>
-			</div>
-			<div class="result">
-			<div class="result-grid">
-					{#each results as result}
-						<button class="confirm-button" on:click={() => handleResult(result)}>{result}</button>
-					{/each}
-				</div>
+			<button class="button gotoPage" on:click={goToPositionAndPlayer}>{currentHand.position} | 
+				{currentHand.playerCount} players  {currentHand.SB}/{currentHand.BB}</button>
+			<button class="button gotoPage" on:click={goToCardSelection}>
+				{currentHand.card1 ?? ' '}
+				{currentHand.card2 ?? ' '}
+				{(currentHand.suited === 'Suited' ? 's' : 'o')}
+			</button>
+			<button class="button gotoPage" on:click={goToAction} >{currentHand.toCall} to call, 
+				{currentHand.action} {currentHand.action === 'Raise' ? 
+				currentHand.raiseAmount : ' '}</button>
+			<div class="flexWide">
+				{#each results as result}
+					<button class="confirm button wide2" on:click={() => handleResult(result)}>{result}</button>
+				{/each}
 			</div>
 	
 <!-- NN    NN    OOOOOO   TTTTTTTT  EEEEEEEE   SSSSSSS -->						
@@ -574,41 +537,37 @@ onMount(() => {
 <!-- NN  NNNN   OO    OO     TT     EE              SS -->						
 <!-- NN    NN    OOOOOO      TT     EEEEEEEE  SSSSSSS  -->						
 		 {:else if step === 6}
-			<div class="gotoPage-button"> 
-				<button on:click={goToPositionAndPlayer}>{currentHand.position} | 
-					{currentHand.playerCount} players  {currentHand.SB}/{currentHand.BB}</button>
-				<button on:click={goToCardSelection}>
-					{currentHand.card1 ?? ' '}
-					{currentHand.card2 ?? ' '}
-					{(currentHand.suited === 'Suited' ? 's' : 'o')}
-				</button>
-				{#if !(currentHand.action === 'Fold')}
-					<button on:click={goToAction} >{currentHand.toCall} to call, {currentHand.action} 
-						{currentHand.action === 'Raise' ? currentHand.raiseAmount : ' '}</button>
-					<button on:click={goToResult} >{currentHand.result}</button>
-				{:else}
-					<button on:click={goToAction}>{currentHand.action}</button>
-				{/if}
-			</div>
-			<div class="notes">
-				<textarea rows="5" cols="50" id="notes" bind:value={currentHand.notes}></textarea>
+			<button class="button gotoPage" on:click={goToPositionAndPlayer}>{currentHand.position} | 
+				{currentHand.playerCount} players  {currentHand.SB}/{currentHand.BB}</button>
+			<button class="button gotoPage" on:click={goToCardSelection}>
+				{currentHand.card1 ?? ' '}
+				{currentHand.card2 ?? ' '}
+				{(currentHand.suited === 'Suited' ? 's' : 'o')}
+			</button>
+
+			{#if !(currentHand.action === 'Fold')}
+			<button class="button gotoPage" on:click={goToAction} >{currentHand.toCall} to call, {currentHand.action} 
+				{currentHand.action === 'Raise' ? currentHand.raiseAmount : ' '}</button>
+			<button class="button gotoPage" on:click={goToResult} >{currentHand.result}</button>
+			{:else}
+				<button class="button gotoPage" on:click={goToAction}>{currentHand.action}</button>
+			{/if}
+			<div class="flexHigh">
+				<!-- rows="5" cols="50"  -->
+				<textarea id="notes" bind:value={currentHand.notes}></textarea>
 			</div>
 			{#if (handReview === 0)}
-				<div class="flag">
-					<div class="flag-grid">
-						{#each flags as flag}
-							<button on:click={() => handleFlag(flag)}>{flag}</button>
-						{/each}
-					</div>
-				</div>
-			{:else}
-			<div class="flag">
-				<div class="flag-grid">
-					{#each afterReview as a}
-						<button on:click={() => handleAfterReview(a)}>{a}</button>
+				<div class="wide">
+					{#each flags as flag}
+						<button class="confirm button wide2" on:click={() => handleFlag(flag)}>{flag}</button>
 					{/each}
 				</div>
-			</div>
+			{:else}
+				<div class="flexWide">
+					{#each afterReview as a}
+						<button class="confirm button wide2" on:click={() => handleAfterReview(a)}>{a}</button>
+					{/each}
+				</div>
 			{/if}
 		
 <!-- HH    HH   IIIIIIII   SSSSSSS  TTTTTTTT   OOOOOO   RRRRRRR   YY    YY -->						
@@ -619,7 +578,7 @@ onMount(() => {
 		{:else if step === 7}
 			<div class="game-history">
 				{#each handHistory as hand}
-						<div class={(hand.flag === "Flag") ? "gotoFlaggedHand" : "gotoPage-button"}>
+						<div class={(hand.flag === "Flag") ? "gotoFlaggedHand" : "gotoPage"}>
 							<button on:click={goToNotes(hand)}>
 								{hand.position} |
 								{hand.card1} {hand.card2} {hand.suited} | {hand.toCall} to call, {hand.action} 
@@ -645,35 +604,56 @@ onMount(() => {
 		height: 97dvh;
 		background: #D9D9D9;
 		border-radius: 6px;
-		box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 		display: flex;
 		flex-direction: column;
 		padding: 0.5%;
 		row-gap: 1%;
 	}
 
-	.container button {
+
+
+	.button {
 		font-size: 20px;
 		border: 3px solid #201b8a;
 		border-radius: 6px;
 		background-color: #f8f9fa;
 		color: #007bff;
 		padding: 2%;
-		width: 100%; 
+		margin: 0.25%;
 	}
 
-	.confirm button {
+	.selected {
+		background-color: #007bff;
+		color: #f8f9fa;
+	}
+
+	.confirm {
 		background-color: #28a745;
 		border-color: #023a0f;
 		color: #000000;
-		
 	}
 
-	.delete-button button {
+	.grow {
+		flex-grow: 1;
+	}
+
+	.delete {
 		background-color: #dc3545;
 		border-color: #510d01;
 		color: #ffffff;
-		height: 100%;
+		width: 20%;
+	}
+
+	.fullWidth {
+		width: 100%;
+	}
+
+	.wide2 {
+		width: 49%;
+	}
+
+	.wide3 {
+		width: 32%;
 	}
 
 	.side-by-side {
@@ -681,11 +661,7 @@ onMount(() => {
 		gap: 1%;
 	}
 
-	.flexfill {
-		flex-grow: 1;
-	}
-
-	.entry-display {
+	.entryDisplay {
 		font-size: 20px;
 		border: 3px solid #7d4f06;
 		border-radius: 4px;
@@ -694,13 +670,12 @@ onMount(() => {
 		padding: 2%;
 	}
 
-	.container input {
+	.input {
 		padding: 10px;
 		font-size: 16px;
 		border: 1px solid #ccc;
 		border-radius: 4px;
 		box-sizing: border-box;
-		width: 100%;
 	}
 
 	.container label {
@@ -716,29 +691,11 @@ onMount(() => {
 		overflow-y: auto;
 	}
 
-	.side-by-side-grid {
-		display: grid;
-		grid-template-columns: repeat(2, auto);
-		justify-content: space-between;
-		flex-grow: 1;
-	}
-
-	.to-flop button {
-			flex: 1;
-			margin: 1%;
-			background-color: #28a745;
-			border-color: #023a0f;
-			color: #000000;
-			width: 31%;
-		}
-
-	.gotoPage-button button{
+	.gotoPage{
 		background-color: #37cd64;
 		border-color: #03511a;
 		color: #000000;
-		font-size: 20px;
-		border-radius: 6px;
-		margin-bottom: 1%;
+		width: 100%;
 	}
 
 	.gotoFlaggedHand button{
@@ -755,155 +712,28 @@ onMount(() => {
 /* PPPPPPPP   OO    OO   SSSSSS      II        TT        II     OO    OO  NN NN NN */
 /* PP         OO    OO        SS     II        TT        II     OO    OO  NN  NNNN */
 /* PP          OOOOOO   SSSSSSS   IIIIIIII     TT     IIIIIIII   OOOOOO   NN    NN */
-	.player-position {
-		display: flex;
-		flex-grow: 1;
-	}
-
-	.player-selection {
+	.flexHigh {
 		display: flex;
 		flex-direction: column;
-		width: 33%;
-	}
-	.player-selection button{
-		width: 100%;
-		margin:1%;
 		flex-grow: 1;
+		justify-content: space-between;
+		align-items: space-between;
+
 	}
 
-	.player-selected {
-		display: flex;
-		flex-direction: column;
-		width: 100%;
-	}
-
-	.player-selected.button{
-		width: 100%;
-		margin:1%;
-		flex-grow: 1;
-		background-color: #007bff;
-		color: #f8f9fa;
-		justify-content: center;
-		align-items: center;
-		
-	}
-
-	.position-selection {
-		display: flex;
-		flex-direction: column;
-		width: 67%;
-	}
-
-	.position-selection button{
-		width: 100%;
-		margin:1%;
-		flex-grow: 1;
-		background-color: #28a745;
-		border-color: #023a0f;
-		color: #000000;
-	}
-
-/*  CCCCCCC      AA     RRRRRRR   DDDDDD     SSSSSSS */
-/* CC          AA  AA   RR    RR  DD    DD  SS       */
-/* CC         AAAAAAAA  RRRRRRR   DD    DD   SSSSSS  */
-/* CC         AA    AA  RR   RR   DD    DD        SS */
-/*  CCCCCCC   AA    AA  RR    RR  DDDDDD    SSSSSSS  */
-	.cards {
+	.flexWide {
 		display: flex;
 		flex-grow: 1;
+		flex-wrap: wrap;
+		justify-content: space-between;
+		align-items: space-between;
 	}
 
-	.card-grid {
-		display: flex;
-		flex-grow: 1;
-		width: 100%;
-	}
-
-	.card {
+	.wide {
 		display: flex;
 		flex-wrap: wrap;
-		flex-grow: 1;
-	}
-
-	.card button{
-		margin:1%;
-		flex-grow: 1;
-		width: 30%;
-	}
-
-	.suited-grid {
-		flex-grow: 1;
-		display: flex;
-		flex-wrap: wrap;
-	}
-
-	.suited-grid button{
-		margin:1%;
-		flex-grow: 1;
-		width: 45%;
-	}
-	
-/*    AA       CCCCCCC  TTTTTTTT  IIIIIIII   OOOOOO   NN    NN */						
-/*  AA  AA    CC           TT        II     OO    OO  NNN   NN */						
-/* AAAAAAAA   CC           TT        II     OO    OO  NN NN NN */						
-/* AA    AA   CC           TT        II     OO    OO  NN  NNNN */						
-/* AA    AA    CCCCCCC     TT     IIIIIIII   OOOOOO   NN    NN */						
-
-	.action {
-		flex-grow: 1;
-		display: flex;
-		flex-direction: column;
-	}
-
-	.action button {
-		flex-grow: 1;
-		margin-top: 1%;
-		height: 100%;
-		justify-content: center;
-		align-items: center;
-	}
-
-	.fold {
-		flex-grow: 1;
-		display: flex;
-		flex-direction: column;
-	}
-
-	.fold.button {
-		background-color: #28a745;
-		border-color: #023a0f;
-		color: #000000;
-		flex-grow: 1;
-		margin-top: 1%;
-		height: 100%;
-		justify-content: center;
-		align-items: center;
-	}
-
-/* RRRRRRR    EEEEEEEE   SSSSSSS  UU    UU  LL        TTTTTTTT */						
-/* RR    RR   EE        SS        UU    UU  LL           TT    */						
-/* RRRRRRR    EEEEEE     SSSSSS   UU    UU  LL           TT    */						
-/* RR   RR    EE              SS  UU    UU  LL           TT    */						
-/* RR    RR   EEEEEEEE  SSSSSSS    UUUUUU   LLLLLLLL     TT    */						
-
-	.result {
-		flex-grow: 1;
-		display: flex;
-		flex-direction: column;
-	}
-
-	.result-grid {
-		flex-grow: 1;
-		display: flex;
-		flex-wrap: wrap;
-	}
-
-	.result button {
-		margin: 1%;
-		background-color: #28a745;
-		border-color: #023a0f;
-		color: #000000;
-		width: 48%;
+		justify-content: space-between;
+		align-items: space-between;
 	}
 
 /* NN    NN    OOOOOO   TTTTTTTT  EEEEEEEE   SSSSSSS */						
@@ -911,11 +741,6 @@ onMount(() => {
 /* NN NN NN   OO    OO     TT     EEEEEE     SSSSSS  */						
 /* NN  NNNN   OO    OO     TT     EE              SS */						
 /* NN    NN    OOOOOO      TT     EEEEEEEE  SSSSSSS  */						
-	.notes {
-		flex-grow: 1;
-		display: flex;
-		flex-direction: column;
-	}
 
 	textarea {
 		flex-grow: 1;
@@ -927,48 +752,17 @@ onMount(() => {
 		text-align: center;
 	}
 
-	.flag-grid {
-		display: flex;
-	}
-
-	.flag button {
-		flex: 1;
-		margin: 1%;
-		background-color: #28a745;
-		border-color: #023a0f;
-		color: #000000;
-		width: 48%;
-	}
-
-	.backspace-button{
-			margin:1%;
-			flex-grow: 1;
-			width: 30%;
-		}
-
-	.backspace-button button{
+	.backspace{
 		background-color: #dc3545;
 		border-color: #510d01;
 		color: #ffffff;
-		margin:0%;
-		flex-grow: 1;
-		width: 100%;
-		height: 100%;
+		width: 32%;
 	}
 	
-	.done-button{
-			margin:1%;
-			flex-grow: 1;
-			width: 30%;
-		}
-
-	.done-button button{
+	.done{
 		background-color: #c79297;
 		border-color: #280701;
 		color: #440505;
-		margin:0%;
-		flex-grow: 1;
-		width: 100%;
-		height: 100%;
+		width: 32%;
 	}
 </style>
