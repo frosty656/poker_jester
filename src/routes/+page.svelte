@@ -576,19 +576,20 @@ onMount(() => {
 <!-- HH    HH      II           SS     TT     OO    OO  RR   RR      YY    -->						
 <!-- HH    HH   IIIIIIII  SSSSSSS      TT      OOOOOO   RR    RR     YY    -->											
 		{:else if step === 7}
-			<div class="game-history">
 				{#each handHistory as hand}
-						<div class={(hand.flag === "Flag") ? "gotoFlaggedHand" : "gotoPage"}>
-							<button on:click={goToNotes(hand)}>
+						<div>
+							<button class={(hand.flag === "Flag") ? "button gotoPage" : "button fullWidth"} on:click={goToNotes(hand)}>
 								{hand.position} |
 								{hand.card1} {hand.card2} {hand.suited} | {hand.toCall} to call, {hand.action} 
 								{hand.action === 'Raise' ? hand.raiseAmount : ' '} | {hand.result}
 							</button>
 						</div>
 				{/each}
+			<div class="flexHigh">
+
 			</div>
-			<div class="confirm">
-				<button class="confirm-button" on:click={goToSessions}>Back to Sessions</button>
+			<div>
+				<button class="confirm button fullWidth" on:click={goToSessions}>Back to Sessions</button>
 			</div>
 		{/if}
 	</div>
@@ -609,8 +610,6 @@ onMount(() => {
 		padding: 0.5%;
 		row-gap: 1%;
 	}
-
-
 
 	.button {
 		font-size: 20px;
@@ -698,15 +697,6 @@ onMount(() => {
 		width: 100%;
 	}
 
-	.gotoFlaggedHand button{
-		background-color: #af2020;
-		border-color: #430606;
-		color: #000000;
-		font-size: 20px;
-		border-radius: 6px;
-		margin-bottom: 1%;
-	}
-	
 /* PPPPPPP     OOOOOO    SSSSSSS  IIIIIIII  TTTTTTTT  IIIIIIII   OOOOOO   NN    NN */
 /* PP    PP   OO    OO  SS           II        TT        II     OO    OO  NNN   NN */
 /* PPPPPPPP   OO    OO   SSSSSS      II        TT        II     OO    OO  NN NN NN */
